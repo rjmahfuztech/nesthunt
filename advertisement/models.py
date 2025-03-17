@@ -37,7 +37,7 @@ class Advertisement(models.Model):
 
 
 class AdvertisementImage(models.Model):
-    advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='advertisement_image')
+    advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='advertisement/images')
 
 
