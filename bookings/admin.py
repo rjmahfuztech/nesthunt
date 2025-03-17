@@ -1,3 +1,5 @@
 from django.contrib import admin
+from bookings.models import RentRequest, Favourite
 
-# Register your models here.
+admin.site.register(RentRequest)
+admin.site.register(Favourite)
