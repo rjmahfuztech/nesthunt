@@ -1,0 +1,114 @@
+[
+  {
+    "model": "advertisement.category",
+    "pk": 1,
+    "fields": {
+      "name": "Apartment",
+      "description": "Fully furnished and semi-furnished apartments available for rent."
+    }
+  },
+  {
+    "model": "advertisement.category",
+    "pk": 2,
+    "fields": {
+      "name": "Villa",
+      "description": "Spacious villas with private gardens and pools."
+    }
+  },
+  {
+    "model": "advertisement.category",
+    "pk": 3,
+    "fields": {
+      "name": "Studio",
+      "description": "Compact studio apartments ideal for individuals and students."
+    }
+  },
+  {
+    "model": "advertisement.category",
+    "pk": 4,
+    "fields": {
+      "name": "Office Space",
+      "description": "Commercial office spaces in prime locations."
+    }
+  },
+  {
+    "model": "advertisement.category",
+    "pk": 5,
+    "fields": {
+      "name": "Penthouse",
+      "description": "Luxury penthouses with panoramic views."
+    }
+  },
+  {
+    "model": "advertisement.advertisement",
+    "pk": 1,
+    "fields": {
+      "title": "Modern 2BHK Apartment",
+      "description": "A stylish 2-bedroom apartment with a balcony and park view.",
+      "owner": 1,
+      "category": 1,
+      "status": "Approved",
+      "rental_amount": "1200.00",
+      "location": "Downtown, City Center",
+      "bedroom": 2,
+      "bathroom": 2,
+      "apartment_size": "900.50",
+      "created_at": "2025-03-17T10:00:00Z",
+      "updated_at": "2025-03-17T12:00:00Z"
+    }
+  },
+  {
+    "model": "advertisement.advertisement",
+    "pk": 2,
+    "fields": {
+      "title": "Luxury Villa with Pool",
+      "description": "Spacious 4BHK villa with a private swimming pool and garden.",
+      "owner": 1,
+      "category": 2,
+      "status": "Pending",
+      "rental_amount": "3500.00",
+      "location": "Beverly Hills, LA",
+      "bedroom": 4,
+      "bathroom": 3,
+      "apartment_size": "3200.75",
+      "created_at": "2025-03-17T11:30:00Z",
+      "updated_at": "2025-03-17T13:30:00Z"
+    }
+  },
+  {
+    "model": "advertisement.advertisement",
+    "pk": 3,
+    "fields": {
+      "title": "Cozy Studio Apartment",
+      "description": "Compact studio apartment near university, perfect for students.",
+      "owner": 2,
+      "category": 3,
+      "status": "Approved",
+      "rental_amount": "700.00",
+      "location": "University Town",
+      "bedroom": 1,
+      "bathroom": 1,
+      "apartment_size": "450.00",
+      "created_at": "2025-03-17T09:15:00Z",
+      "updated_at": "2025-03-17T10:45:00Z"
+    }
+  },
+  {
+    "model": "advertisement.advertisement",
+    "pk": 4,
+    "fields": {
+      "title": "Furnished Office Space",
+      "description": "1000 sq.ft. office space with conference room and parking.",
+      "owner": 1,
+      "category": 4,
+      "status": "Rejected",
+      "rental_amount": "2500.00",
+      "location": "Business District",
+      "bedroom": 0,
+      "bathroom": 2,
+      "apartment_size": "1000.00",
+      "created_at": "2025-03-17T08:45:00Z",
+      "updated_at": "2025-03-17T11:15:00Z"
+    }
+  }
+]
