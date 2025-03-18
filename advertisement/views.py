@@ -48,7 +48,6 @@ class AdvertisementImageViewSet(viewsets.ModelViewSet):
         return AdvertisementImage.objects.filter(advertisement_id=self.kwargs.get('advertisement_pk'))
     
     def perform_create(self, serializer):
-        # serializer.save(advertisement_id = self.kwargs.get('advertisement_pk'))
         advertisement = Advertisement.objects.get(pk=self.kwargs.get('advertisement_pk'))
 
         if advertisement.owner != self.request.user:
