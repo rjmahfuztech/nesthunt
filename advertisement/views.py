@@ -2,9 +2,11 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from api.permissions import IsAdminOrReadOnly
-from advertisement.models import Advertisement, Category, AdvertisementImage
+from advertisement.models import Advertisement, Category, AdvertisementImage, Review
 from advertisement import serializers
 from django_filters.rest_framework import DjangoFilterBackend
+from advertisement.permissions import IsAdvertisementOwnerOrReadOnly, IsReviewAuthorOrReadOnly
+from rest_framework.exceptions import PermissionDenied
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -14,7 +16,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class AdvertisementViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'delete', 'patch', 'head', 'options']
+    http_method_names = ['get', 'post', 'delete', 'patch', 'options']
     
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category', 'location', 'bedroom', 'bathroom']
@@ -39,12 +41,29 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     
 
 class AdvertisementImageViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdvertisementOwnerOrReadOnly]
     serializer_class = serializers.AdvertisementImageSerializer
 
     def get_queryset(self):
         return AdvertisementImage.objects.filter(advertisement_id=self.kwargs.get('advertisement_pk'))
     
     def perform_create(self, serializer):
-        serializer.save(advertisement_id=self.kwargs.get('advertisement_pk'))
+        # serializer.save(advertisement_id = self.kwargs.get('advertisement_pk'))
+        advertisement = Advertisement.objects.get(pk=self.kwargs.get('advertisement_pk'))
+
+        if advertisement.owner != self.request.user:
+            raise PermissionDenied('You do not have permission to add image for the Advertisement!')
+        serializer.save(advertisement=advertisement)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ReviewSerializer
+    permission_classes = [IsReviewAuthorOrReadOnly]
+
+    def get_queryset(self):
+        return Review.objects.select_related('user').filter(advertisement_id=self.kwargs.get('advertisement_pk'))
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, advertisement_id=self.kwargs.get('advertisement_pk'))
+
 
