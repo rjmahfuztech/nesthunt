@@ -20,7 +20,6 @@ class RentRequestViewSet(viewsets.ModelViewSet):
 
 class FavouriteViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
-    # serializer_class = FavouriteSerializer
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
