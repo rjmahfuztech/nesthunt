@@ -32,7 +32,7 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
         return [IsAuthenticatedOrReadOnly()]
     
     def get_serializer_class(self):
-        if self.request.method == 'PATCH':
+        if self.request.method in ['PATCH', 'DELETE']:
             return serializers.UpdateAdvertisementSerializer
         return serializers.AdvertisementSerializer
     
@@ -41,14 +41,16 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     
 
 class AdvertisementImageViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'delete', 'options']
+
     permission_classes = [IsAdvertisementOwnerOrReadOnly]
     serializer_class = serializers.AdvertisementImageSerializer
 
     def get_queryset(self):
-        return AdvertisementImage.objects.filter(advertisement_id=self.kwargs.get('advertisement_pk'))
+        return AdvertisementImage.objects.filter(advertisement_id=self.kwargs.get('my_advertisement_pk'))
     
     def perform_create(self, serializer):
-        advertisement = Advertisement.objects.get(pk=self.kwargs.get('advertisement_pk'))
+        advertisement = Advertisement.objects.get(pk=self.kwargs.get('my_advertisement_pk'))
 
         if advertisement.owner != self.request.user:
             raise PermissionDenied('You do not have permission to add image for the Advertisement!')
