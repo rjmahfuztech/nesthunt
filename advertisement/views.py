@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAdvertisementOwnerOrReadOnly
 from advertisement.models import Advertisement, Category, AdvertisementImage, Review
 from advertisement import serializers
 from django_filters.rest_framework import DjangoFilterBackend
-from advertisement.permissions import IsAdvertisementOwnerOrReadOnly, IsReviewAuthorOrReadOnly
+from advertisement.permissions import IsReviewAuthorOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 
 
