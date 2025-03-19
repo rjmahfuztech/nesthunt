@@ -1,13 +1,28 @@
 from bookings.models import RentRequest, Favourite
 from advertisement.models import Advertisement
 from rest_framework import serializers
+from advertisement.serializers import SimpleUserSerializer
 
+class SimpleAdvertisementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advertisement
+        fields = ['id', 'title', 'description', 'location']
 
 class RentRequestSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(method_name='get_user')
+    advertisement = SimpleAdvertisementSerializer()
     class Meta:
         model = RentRequest
         fields = ['id', 'advertisement', 'user', 'status']
         read_only_fields = ['user', 'status']
+
+    def get_user(self, obj):
+        return SimpleUserSerializer(obj.user).data
+
+class UpdateRentRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RentRequest
+        fields = ['status']
 
 
 class FavouriteSerializer(serializers.ModelSerializer):

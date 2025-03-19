@@ -1,13 +1,14 @@
 from django.urls import path, include
 from rest_framework_nested import routers
 from advertisement.views import AdvertisementViewSet, CategoryViewSet, AdvertisementImageViewSet, ReviewViewSet
-from bookings.views import RentRequestViewSet, FavouriteViewSet
+from bookings.views import MyRentViewSet, MyRentRequestViewSet, FavouriteViewSet
 
 router = routers.DefaultRouter()
 
 router.register('advertisements', AdvertisementViewSet, basename='advertisements')
 router.register('categories', CategoryViewSet, basename='categories')
-router.register('rent_requests', RentRequestViewSet, basename='rent_requests')
+router.register('rent_rents', MyRentViewSet, basename='rent-rents')
+router.register('my_rent_requests', MyRentRequestViewSet, basename='my-rent-requests')
 router.register('favourites', FavouriteViewSet, basename='favourites')
 
 advertisement_router = routers.NestedDefaultRouter(router, 'advertisements', lookup='advertisement')
