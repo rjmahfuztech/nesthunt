@@ -6,11 +6,10 @@ from advertisement.serializers import SimpleUserSerializer
 class SimpleAdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
-        fields = ['id', 'title', 'description', 'location']
+        fields = ['id', 'title', 'description', 'location', 'bedroom', 'bathroom', 'rental_amount']
 
 class RentRequestSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
-    # advertisement = SimpleAdvertisementSerializer()
     class Meta:
         model = RentRequest
         fields = ['id', 'advertisement', 'user', 'status']
@@ -18,6 +17,15 @@ class RentRequestSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return SimpleUserSerializer(obj.user).data
+    
+class UserRequestSerializer(serializers.ModelSerializer):
+    advertisement = SimpleAdvertisementSerializer(read_only=True)
+    advertisement_id = serializers.IntegerField(write_only=True)
+    class Meta:
+        model = RentRequest
+        fields = ['id', 'advertisement', 'status', 'advertisement_id']
+        read_only_fields = ['status']
+
 
 class UpdateRentRequestSerializer(serializers.ModelSerializer):
     class Meta:
