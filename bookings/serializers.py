@@ -10,7 +10,7 @@ class SimpleAdvertisementSerializer(serializers.ModelSerializer):
 
 class RentRequestSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
-    advertisement = SimpleAdvertisementSerializer()
+    # advertisement = SimpleAdvertisementSerializer()
     class Meta:
         model = RentRequest
         fields = ['id', 'advertisement', 'user', 'status']

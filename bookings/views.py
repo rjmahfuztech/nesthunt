@@ -47,7 +47,7 @@ class MyRentRequestViewSet(viewsets.ModelViewSet):
             return RentRequestSerializer
         
     def get_queryset(self):
-        return RentRequest.objects.select_related('user').select_related('advertisement').filter(user=self.request.user)
+        return RentRequest.objects.select_related('user').filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -63,9 +63,6 @@ class MyRentViewSet(viewsets.ModelViewSet):
         
     def get_queryset(self):
         return RentRequest.objects.select_related('user').select_related('advertisement').filter(advertisement__owner=self.request.user)
-    
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 class FavouriteViewSet(viewsets.ModelViewSet):

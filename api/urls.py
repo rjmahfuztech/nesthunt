@@ -7,7 +7,7 @@ router = routers.DefaultRouter()
 
 router.register('advertisements', AdvertisementViewSet, basename='advertisements')
 router.register('categories', CategoryViewSet, basename='categories')
-router.register('rent_rents', MyRentViewSet, basename='rent-rents')
+router.register('my_rents', MyRentViewSet, basename='my-rents')
 router.register('my_rent_requests', MyRentRequestViewSet, basename='my-rent-requests')
 router.register('favourites', FavouriteViewSet, basename='favourites')
 
