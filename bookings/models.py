@@ -1,6 +1,7 @@
 from django.db import models
 from advertisement.models import Advertisement
 from users.models import User
+from uuid import uuid4
 
 class RentRequest(models.Model):
     PENDING = 'Pending'
@@ -21,6 +22,7 @@ class RentRequest(models.Model):
 
 
 class Favourite(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='favourite')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favourite')
 
