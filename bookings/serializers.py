@@ -17,6 +17,7 @@ class RentRequestSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return SimpleUserSerializer(obj.user).data
+
     
 class UserRequestSerializer(serializers.ModelSerializer):
     advertisement = SimpleAdvertisementSerializer(read_only=True)
@@ -25,6 +26,28 @@ class UserRequestSerializer(serializers.ModelSerializer):
         model = RentRequest
         fields = ['id', 'advertisement', 'status', 'advertisement_id']
         read_only_fields = ['status']
+
+    def validate_advertisement_id(self, value):
+        if value <= 0:
+            raise serializers.ValidationError('Your advertisement Id must be 1 or bigger value')
+        elif not Advertisement.objects.filter(pk=value).exists():
+            raise serializers.ValidationError(f'Advertisement with id {value} does not exist')
+        elif not Advertisement.objects.filter(pk=value, status='Approved'):
+            raise serializers.ValidationError(f'Advertisement with Id {value} is not verified by Admin')
+        elif RentRequest.objects.filter(advertisement_id=value, user=self.context['request'].user).exists():
+            raise serializers.ValidationError('You have already requested for this advertisement')
+        elif Advertisement.objects.filter(pk=value , is_rented=True).exists():
+            raise serializers.ValidationError("You can't send Rent request. This advertisement is already booked for rent")
+        elif Advertisement.objects.filter(pk=value, owner=self.context['request'].user).exists():
+            raise serializers.ValidationError("This is your advertisement! you can't send rent request")
+        
+        return value
+
+    def create(self, validated_data):
+        advertisement_id = validated_data['advertisement_id']
+        user = validated_data['user']
+
+        return RentRequest.objects.create(user=user, advertisement_id=advertisement_id)
 
 
 class UpdateRentRequestSerializer(serializers.ModelSerializer):
@@ -50,7 +73,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
         elif not Advertisement.objects.filter(pk=value).exists():
             raise serializers.ValidationError(f'Advertisement with id {value} does not exist')
         elif not Advertisement.objects.filter(pk=value, status='Approved'):
-            raise serializers.ValidationError(f'Advertisement with Id {value} not verified by Admin')
+            raise serializers.ValidationError(f'Advertisement with Id {value} is not verified by Admin')
         elif Favourite.objects.filter(advertisement_id=value, user=self.context['request'].user).exists():
             raise serializers.ValidationError('You have already saved this advertisement in your Favourite list!')
         

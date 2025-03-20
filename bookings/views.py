@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from bookings.models import RentRequest, Favourite
 from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, exceptions
 from rest_framework.permissions import IsAuthenticated
 from api.permissions import IsAdvertisementOwnerOrReadOnly
 
@@ -17,6 +17,23 @@ class RentRequestViewSet(viewsets.ModelViewSet):
         
     def get_queryset(self):
         return RentRequest.objects.filter(advertisement_id=self.kwargs.get('my_advertisement_pk'))
+    
+    def perform_update(self, serializer):
+        # checking any request is approved or not
+        rent_request = self.get_object()
+        if rent_request.advertisement.is_rented == True:
+            raise exceptions.PermissionDenied("You have already accepted a request. You can't update any request for this advertisement.")
+        
+        # update
+        rent_request = serializer.save()
+
+        if rent_request.status == RentRequest.APPROVED:
+            advertisement = rent_request.advertisement
+
+            advertisement.is_rented = True
+            advertisement.save()
+
+            RentRequest.objects.filter(advertisement=advertisement, status=RentRequest.PENDING).exclude(id=rent_request.id).update(status=RentRequest.REJECTED)
 
 
 class MyRentRequestViewSet(viewsets.ModelViewSet):
