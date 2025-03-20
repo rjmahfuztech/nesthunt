@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from advertisement.models import Advertisement
-from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
 
 
 class MyAdvertisementSerializer(serializers.ModelSerializer):
@@ -13,3 +13,7 @@ class MyAdvertisementSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ['id', 'email', 'password', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image']
+
+class UserSerializer(BaseUserSerializer):
+    class Meta(BaseUserSerializer.Meta):
+        fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image']
