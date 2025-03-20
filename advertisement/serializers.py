@@ -25,8 +25,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     images = AdvertisementImageSerializer(many=True, read_only=True)
     class Meta:
         model = Advertisement
-        fields = ['id', 'title', 'description', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images']
-        read_only_fields = ['status', 'owner']
+        fields = ['id', 'title', 'description', 'is_rented', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images']
+        read_only_fields = ['status','is_rented', 'owner']
 
     def create(self, validated_data):
         user = self.context['user']

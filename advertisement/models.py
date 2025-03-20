@@ -31,6 +31,7 @@ class Advertisement(models.Model):
     apartment_size = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_rented = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
