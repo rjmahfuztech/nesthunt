@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from bookings.models import RentRequest, Favourite
 from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer
 from rest_framework import viewsets, exceptions
