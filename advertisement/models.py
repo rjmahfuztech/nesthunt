@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -39,7 +40,7 @@ class Advertisement(models.Model):
 
 class AdvertisementImage(models.Model):
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='advertisement/images')
+    image = CloudinaryField('advertisement_image')
 
 
 class Review(models.Model):

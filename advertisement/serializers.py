@@ -9,12 +9,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description']
 
 class AdvertisementImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
     class Meta:
         model = AdvertisementImage
         fields = ['id', 'image']
 
-class EmptySerializer(serializers.Serializer):
-    pass
 
 class UpdateAdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
