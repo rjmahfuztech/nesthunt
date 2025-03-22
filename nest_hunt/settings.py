@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'nest_hunt.wsgi.application'
+WSGI_APPLICATION = 'nest_hunt.wsgi.app'
 
 
 # Database
