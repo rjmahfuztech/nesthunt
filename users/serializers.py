@@ -13,10 +13,12 @@ class MyAdvertisementSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
+    profile_image = serializers.ImageField()
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ['id', 'email', 'password', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image']
 
 class UserSerializer(BaseUserSerializer):
+    profile_image = serializers.ImageField()
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'CustomUser'
         fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image']
