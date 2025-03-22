@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from advertisement.models import Advertisement
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
+from advertisement.serializers import AdvertisementImageSerializer
 
 
 class MyAdvertisementSerializer(serializers.ModelSerializer):
+    images = AdvertisementImageSerializer(many=True, read_only=True)
     class Meta:
         model = Advertisement
-        fields = ['id', 'title', 'description', 'category', 'status', 'location', 'bedroom', 'bathroom', 'rental_amount', 'apartment_size']
+        fields = ['id', 'title', 'description', 'category', 'status', 'location', 'bedroom', 'bathroom', 'rental_amount', 'apartment_size', 'images']
         read_only_fields = ['status', 'category']
 
 

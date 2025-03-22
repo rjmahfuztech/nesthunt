@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,6 +92,17 @@ DATABASES = {
         'PORT': config('port')
     }
 }
+
+# Cloudinary configuration for files/images
+cloudinary.config( 
+    cloud_name = config('cloud_name'), 
+    api_key = config('api_key'), 
+    api_secret = config('api_secret'),
+    secure=True
+)
+
+# Media storage settings
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 INTERNAL_IPS = [
