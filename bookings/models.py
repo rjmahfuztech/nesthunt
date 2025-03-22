@@ -12,6 +12,7 @@ class RentRequest(models.Model):
         (APPROVED, 'Approved'),
         (REJECTED, 'Rejected')    
     ]
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='rent_request')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rent_request')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
