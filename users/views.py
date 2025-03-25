@@ -16,7 +16,7 @@ class MyAdvertisementViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return Advertisement.objects.none
-        return Advertisement.objects.filter(owner=self.request.user)
+        return Advertisement.objects.prefetch_related('images').filter(owner=self.request.user)
     
     @swagger_auto_schema(
         operation_summary='Get a list of advertisement posted by owner',
@@ -37,7 +37,7 @@ class MyAdvertisementViewSet(viewsets.ModelViewSet):
         operation_description='Only advertisement Owner can update their advertisement'
     )
     def update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
     
     @swagger_auto_schema(
         operation_summary='Delete a specific advertisement by Owner',
