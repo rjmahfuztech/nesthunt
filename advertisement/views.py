@@ -196,7 +196,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         operation_description='Only Review Owner/admin can update their review for an advertisement'
     )
     def update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
     
     @swagger_auto_schema(
         operation_summary='Delete a specific review for an advertisement by Admin',
