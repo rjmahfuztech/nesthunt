@@ -20,7 +20,7 @@ class RentRequestSerializer(serializers.ModelSerializer):
 
     
 class UserRequestSerializer(serializers.ModelSerializer):
-    advertisement = SimpleAdvertisementSerializer(many=True, read_only=True)
+    advertisement = SimpleAdvertisementSerializer(read_only=True)
     advertisement_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = RentRequest
