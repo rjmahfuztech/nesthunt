@@ -18,13 +18,25 @@ class RentRequestSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return SimpleUserSerializer(obj.user).data
 
-    
-class UserRequestSerializer(serializers.ModelSerializer):
-    advertisement = SimpleAdvertisementSerializer(read_only=True)
-    advertisement_id = serializers.IntegerField(write_only=True)
+class UpdateRentRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = RentRequest
-        fields = ['id', 'advertisement', 'status', 'advertisement_id']
+        fields = ['status']
+
+
+class UserRequestSerializer(serializers.ModelSerializer):
+    advertisement = SimpleAdvertisementSerializer(read_only=True)
+    class Meta:
+        model = RentRequest
+        fields = ['id', 'advertisement', 'status']
+        read_only_fields = ['status']
+
+
+class UserAddRequestSerializer(serializers.ModelSerializer):
+    advertisement_id = serializers.IntegerField()
+    class Meta:
+        model = RentRequest
+        fields = ['id', 'status', 'advertisement_id']
         read_only_fields = ['status']
 
     def validate_advertisement_id(self, value):
@@ -48,12 +60,6 @@ class UserRequestSerializer(serializers.ModelSerializer):
         user = validated_data['user']
 
         return RentRequest.objects.create(user=user, advertisement_id=advertisement_id)
-
-
-class UpdateRentRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RentRequest
-        fields = ['status']
 
 
 class FavouriteSerializer(serializers.ModelSerializer):

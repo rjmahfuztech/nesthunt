@@ -1,5 +1,5 @@
 from bookings.models import RentRequest, Favourite
-from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer
+from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UserAddRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer
 from rest_framework import viewsets, exceptions
 from rest_framework.permissions import IsAuthenticated
 from api.permissions import IsAdvertisementOwnerOrReadOnly
@@ -59,7 +59,11 @@ class RentRequestViewSet(viewsets.ModelViewSet):
 class MyRentRequestViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'head', 'options']
     permission_classes = [IsAuthenticated]
-    serializer_class = UserRequestSerializer
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return UserAddRequestSerializer
+        return UserRequestSerializer
         
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
