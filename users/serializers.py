@@ -14,7 +14,7 @@ class MyAdvertisementSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
-        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'address', 'phone_number']
+        fields = ['id', 'email', 'password', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image']
 
 class UserSerializer(BaseUserSerializer):
     profile_image = serializers.ImageField(required=False)
