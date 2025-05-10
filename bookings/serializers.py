@@ -6,7 +6,7 @@ from advertisement.serializers import SimpleUserSerializer
 class SimpleAdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
-        fields = ['id', 'title', 'description', 'location', 'bedroom', 'bathroom', 'rental_amount']
+        fields = ['id', 'title', 'description', 'location', 'bedroom', 'bathroom', 'apartment_size', 'rental_amount']
 
 class RentRequestSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
