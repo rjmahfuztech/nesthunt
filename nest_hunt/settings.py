@@ -74,7 +74,8 @@ TEMPLATES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://nesthunt.vercel.app'
 ]
 
 WSGI_APPLICATION = 'nest_hunt.wsgi.app'
