@@ -60,7 +60,7 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = AdvertiseFilter
-    search_fields = ['title, location']
+    search_fields = ['title', 'location']
 
     def get_queryset(self):
         if self.request.user.is_staff:
