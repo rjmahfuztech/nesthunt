@@ -12,7 +12,7 @@ class RentRequestSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
     class Meta:
         model = RentRequest
-        fields = ['id', 'advertisement', 'user', 'status']
+        fields = ['id', 'advertisement', 'user', 'status', 'created_at']
         read_only_fields = ['user', 'status']
 
     def get_user(self, obj):
