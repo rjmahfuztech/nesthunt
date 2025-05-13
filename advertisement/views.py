@@ -59,7 +59,7 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'patch', 'options']
     
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_class = [AdvertiseFilter]
+    filterset_class = AdvertiseFilter
     search_fields = ['title, location']
 
     def get_queryset(self):
