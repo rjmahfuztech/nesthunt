@@ -33,12 +33,19 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
 class SimpleUserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(method_name='get_current_user_full_name')
+    profile_image = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ['id', 'name', 'profile_image', 'email', 'address']
 
     def get_current_user_full_name(self, obj):
         return obj.get_full_name()
+    
+    def get_profile_image(self, obj):
+        if obj.profile_image:
+            return obj.profile_image.url
+        return None
     
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
