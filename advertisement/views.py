@@ -5,9 +5,11 @@ from api.permissions import IsAdminOrReadOnly, IsAdvertisementOwnerOrReadOnly
 from advertisement.models import Advertisement, Category, AdvertisementImage, Review
 from advertisement import serializers
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from advertisement.permissions import IsReviewAuthorOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 from drf_yasg.utils import swagger_auto_schema
+from advertisement.filter import AdvertiseFilter
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -56,8 +58,9 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class AdvertisementViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'patch', 'options']
     
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category', 'location', 'bedroom', 'bathroom']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = [AdvertiseFilter]
+    search_fields = ['title, location']
 
     def get_queryset(self):
         if self.request.user.is_staff:
