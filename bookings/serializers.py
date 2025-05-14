@@ -64,11 +64,8 @@ class UserAddRequestSerializer(serializers.ModelSerializer):
 
 class FavouriteSerializer(serializers.ModelSerializer):
     advertisement_id = serializers.IntegerField(write_only=True)
-    advertisement = serializers.HyperlinkedRelatedField(
-        view_name = 'advertisements-detail',
-        read_only=True
-    )
-
+    advertisement = SimpleAdvertisementSerializer(read_only=True)
+    
     class Meta:
         model = Favourite
         fields = ['id', 'advertisement_id', 'advertisement']
