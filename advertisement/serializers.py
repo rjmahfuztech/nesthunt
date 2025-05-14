@@ -15,29 +15,13 @@ class AdvertisementImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
 
 
-class UpdateAdvertisementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Advertisement
-        fields = ['status']
-
-class AdvertisementSerializer(serializers.ModelSerializer):
-    images = AdvertisementImageSerializer(many=True, read_only=True)
-    class Meta:
-        model = Advertisement
-        fields = ['id', 'title', 'description', 'is_rented', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images']
-        read_only_fields = ['status','is_rented', 'owner']
-
-    def create(self, validated_data):
-        user = self.context['user']
-        return Advertisement.objects.create(owner=user, **validated_data)
-
 class SimpleUserSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(method_name='get_current_user_full_name')
     profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'profile_image', 'email', 'address']
+        fields = ['id', 'name', 'profile_image', 'email', 'address', 'phone_number']
 
     def get_current_user_full_name(self, obj):
         return obj.get_full_name()
@@ -46,6 +30,28 @@ class SimpleUserSerializer(serializers.ModelSerializer):
         if obj.profile_image:
             return obj.profile_image.url
         return None
+
+
+class UpdateAdvertisementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advertisement
+        fields = ['status']
+
+class AdvertisementSerializer(serializers.ModelSerializer):
+    images = AdvertisementImageSerializer(many=True, read_only=True)
+    owner = serializers.SerializerMethodField()
+    class Meta:
+        model = Advertisement
+        fields = ['id', 'title', 'description', 'is_rented', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images']
+        read_only_fields = ['status','is_rented', 'owner']
+    
+    def get_owner(self, obj):
+        return SimpleUserSerializer(obj.owner).data
+
+    def create(self, validated_data):
+        user = self.context['user']
+        return Advertisement.objects.create(owner=user, **validated_data)
+
     
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(method_name='get_user')
