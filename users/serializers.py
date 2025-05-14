@@ -21,5 +21,5 @@ class UserSerializer(BaseUserSerializer):
     profile_image = serializers.ImageField(required=False)
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'CustomUser'
-        fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image', 'is_staff']
+        fields = ['id', 'email', 'first_name', 'last_name', 'address', 'phone_number', 'profile_image', 'is_staff', 'last_login', 'date_joined']
         read_only_fields = ['is_staff']
