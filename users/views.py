@@ -1,5 +1,5 @@
 from users.serializers import MyAdvertisementSerializer
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status, exceptions
 from advertisement.models import Advertisement
 from rest_framework.response import Response
 from django.utils.timezone import now
@@ -7,6 +7,9 @@ from datetime import timedelta
 from users.models import User
 from django.db.models import Count, Q
 from drf_yasg.utils import swagger_auto_schema
+from djoser.views import UserViewSet
+from django.contrib.auth.hashers import check_password
+
 
 class MyAdvertisementViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'delete', 'put', 'options']
@@ -67,3 +70,29 @@ class AdminDashboardViewSet(viewsets.ViewSet):
         )
 
         return Response({**statistic, 'total_users': User.objects.count()})
+    
+
+# Custom User viewSet
+class CustomUserViewSet(UserViewSet):
+    def destroy(self, request, *args, **kwargs):
+        target_user = self.get_object()
+
+        # admin can delete any user without password
+        if request.user.is_staff or request.user.is_superuser:
+            target_user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        # user can delete their own account with current password
+        if request.user == target_user:
+            current_password = request.data.get('current_password')
+            if not current_password:
+                raise exceptions.ValidationError({'current_password': 'This field is required.'})
+            if not check_password(current_password, request.user.password):
+                raise exceptions.ValidationError({'current_password': 'Password is incorrect.'})
+            
+            # delete user
+            request.user.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        # user can't delete other users
+        raise exceptions.PermissionDenied('You do not have permission to delete this user.')
