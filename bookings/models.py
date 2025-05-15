@@ -29,4 +29,26 @@ class Favourite(models.Model):
 
     def __str__(self):
         return f"`{self.user.first_name}` Save as Favourite {self.advertisement.title}"
+    
 
+class Order(models.Model):
+    NOT_PAID = 'Not Paid'
+    BOOKED = 'Booked'
+    CANCELLED = 'Cancelled'
+    STATUS_CHOICES = [
+        (NOT_PAID, 'Not Paid'),
+        (BOOKED, 'Booked'),
+        (CANCELLED, 'Cancelled')
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, related_name='orders')
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=NOT_PAID)
+    full_name = models.CharField(max_length=250)
+    address = models.TextField()
+    phone_number = models.CharField(max_length=20)
+    payment_date = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.first_name}'s order for {self.advertisement.title}"
