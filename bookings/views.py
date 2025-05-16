@@ -1,9 +1,10 @@
-from bookings.models import RentRequest, Favourite
-from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UserAddRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer
-from rest_framework import viewsets, exceptions
-from rest_framework.permissions import IsAuthenticated
+from bookings.models import RentRequest, Favourite, Order
+from bookings.serializers import RentRequestSerializer, UserRequestSerializer, UserAddRequestSerializer, UpdateRentRequestSerializer, FavouriteSerializer, OrderSerializer, OrderUpdateSerializer, EmptySerializer
+from rest_framework import viewsets, exceptions, response, status
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from api.permissions import IsAdvertisementOwnerOrReadOnly
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import action
 
 
 class RentRequestViewSet(viewsets.ModelViewSet):
@@ -145,3 +146,41 @@ class FavouriteViewSet(viewsets.ModelViewSet):
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+    
+
+class OrderViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Order.objects.select_related('advertisement').all()
+        return Order.objects.select_related('advertisement').filter(user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def cancel_order(self, request, pk=None):
+        order = self.get_object()
+
+        if order.user != request.user:
+            raise exceptions.PermissionDenied({'detail': 'You can only cancel your own order.'})
+        if order.status == Order.BOOKED:
+            raise exceptions.PermissionDenied({'detail': "You can not cancel this order. You already booked this."})
+        
+        order.status = Order.CANCELLED
+        order.save()
+
+        return response.Response(status=status.HTTP_200_OK)
+    
+    def get_permissions(self):
+        if self.action in ['partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+        
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return OrderUpdateSerializer
+        if self.action == 'cancel_order':
+            return EmptySerializer
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

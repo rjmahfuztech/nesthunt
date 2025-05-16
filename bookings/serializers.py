@@ -1,4 +1,4 @@
-from bookings.models import RentRequest, Favourite
+from bookings.models import RentRequest, Favourite, Order
 from advertisement.models import Advertisement
 from rest_framework import serializers
 from advertisement.serializers import SimpleUserSerializer
@@ -87,3 +87,26 @@ class FavouriteSerializer(serializers.ModelSerializer):
         user = validated_data['user']
 
         return Favourite.objects.create(user=user, advertisement_id=advertisement_id)
+
+
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['status']
+    
+
+class OrderSerializer(serializers.ModelSerializer):
+    advertisement = SimpleAdvertisementSerializer(read_only=True)
+    advertisement_id = serializers.IntegerField(write_only=True)
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'advertisement_id', 'advertisement', 'status', 'full_name', 'address', 'phone_number', 'payment_date', 'created_at']
+        read_only_fields = ['user', 'status', 'payment_date']
+
+    def create(self, validated_data):
+        return Order.objects.create(**validated_data)
+
+
+class EmptySerializer(serializers.Serializer):
+    pass
