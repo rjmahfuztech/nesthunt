@@ -104,6 +104,12 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'advertisement_id', 'advertisement', 'status', 'full_name', 'address', 'phone_number', 'payment_date', 'created_at']
         read_only_fields = ['user', 'status', 'payment_date']
 
+    def validate_advertisement_id(self, value):
+        if Order.objects.filter(advertisement_id=value, user=self.context['request'].user).exists():
+            raise serializers.ValidationError('You have already have an order for this rent advertisement. Check order section.')
+        
+        return value
+
     def create(self, validated_data):
         return Order.objects.create(**validated_data)
 
