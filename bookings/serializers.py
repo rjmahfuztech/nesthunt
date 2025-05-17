@@ -106,7 +106,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def validate_advertisement_id(self, value):
         if Order.objects.filter(advertisement_id=value, user=self.context['request'].user).exists():
-            raise serializers.ValidationError('You have already have an order for this rent advertisement. Check order section.')
+            raise serializers.ValidationError('You already have an order for this rent advertisement. Check order section.')
         
         return value
 
