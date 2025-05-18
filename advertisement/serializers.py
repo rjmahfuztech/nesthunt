@@ -42,8 +42,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
     class Meta:
         model = Advertisement
-        fields = ['id', 'title', 'description', 'is_rented', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images']
-        read_only_fields = ['status','is_rented', 'owner']
+        fields = ['id', 'title', 'description', 'is_rented', 'category', 'status', 'owner', 'rental_amount', 'location', 'bedroom', 'bathroom', 'apartment_size', 'images', 'created_at']
+        read_only_fields = ['status','is_rented', 'owner', 'created_at']
     
     def get_owner(self, obj):
         return SimpleUserSerializer(obj.owner).data
