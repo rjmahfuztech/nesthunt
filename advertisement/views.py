@@ -10,12 +10,13 @@ from advertisement.permissions import IsReviewAuthorOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 from drf_yasg.utils import swagger_auto_schema
 from advertisement.filter import AdvertiseFilter
+from django.db.models import Count
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'put', 'options']
 
-    queryset = Category.objects.all()
+    queryset = Category.objects.annotate(advertise_count=Count('advertisements')).all()
     serializer_class = serializers.CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
 

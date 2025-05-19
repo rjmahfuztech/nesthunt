@@ -6,7 +6,9 @@ from rest_framework import serializers
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'description', 'advertise_count']
+
+    advertise_count = serializers.IntegerField(read_only=True, help_text='Return the number of house advertisement in each category')
 
 class AdvertisementImageSerializer(serializers.ModelSerializer):
     image = serializers.ImageField()
