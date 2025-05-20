@@ -8,6 +8,8 @@ from rest_framework.decorators import action, api_view
 from sslcommerz_lib import SSLCOMMERZ
 from django.conf import settings as main_settings
 from django.shortcuts import redirect
+from django.utils import timezone
+from rest_framework.views import APIView
 
 
 class RentRequestViewSet(viewsets.ModelViewSet):
@@ -26,18 +28,19 @@ class RentRequestViewSet(viewsets.ModelViewSet):
         # checking any request is approved or not
         rent_request = self.get_object()
         if rent_request.advertisement.is_rented == True:
-            raise exceptions.PermissionDenied("You have already accepted a request. You can't update any request for this advertisement.")
+            raise exceptions.PermissionDenied("Your house already rented. You can't update anything for this advertisement now.")
         
         # update
         rent_request = serializer.save()
+        advertisement = rent_request.advertisement
 
+        # if one approved then others will be rejected
         if rent_request.status == RentRequest.APPROVED:
-            advertisement = rent_request.advertisement
-
-            advertisement.is_rented = True
-            advertisement.save()
-
             RentRequest.objects.filter(advertisement=advertisement, status=RentRequest.PENDING).exclude(id=rent_request.id).update(status=RentRequest.REJECTED)
+        # if approved one is pending then others rejected will comes to pending
+        elif rent_request.status == RentRequest.PENDING:
+            RentRequest.objects.filter(advertisement=advertisement, status=RentRequest.REJECTED).exclude(id=rent_request.id).update(status=RentRequest.PENDING)
+        
 
     @swagger_auto_schema(
         operation_summary='Get a list of rent request for an advertisement',
@@ -237,8 +240,16 @@ def payment_initiate(request):
 def payment_success(request):
     order_id = request.data.get('tran_id').split('_')[1]
     order = Order.objects.get(id=order_id)
+    # updating advertisement as rented
+    order.advertisement.is_rented = True
+    order.advertisement.save();
+    # updating order status to booked
     order.status = 'Booked'
+    # setting the payment date
+    order.payment_date = timezone.now()
+    # finally save the order
     order.save()
+
     return redirect(f'{main_settings.FRONTEND_URL}/payment/success')
 
 # fail
@@ -250,3 +261,13 @@ def payment_fail(request):
 @api_view(['POST'])
 def payment_cancel(request):
     return redirect(f'{main_settings.FRONTEND_URL}/payment/cancel')
+
+# checking order
+class HasHouseRented(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, advertise_id):
+        user = request.user
+        has_rented = Order.objects.filter(advertisement_id=advertise_id, user=user, status=Order.BOOKED).exists()
+
+        return response.Response({'has_rented': has_rented})
