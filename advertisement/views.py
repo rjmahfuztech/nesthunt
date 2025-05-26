@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from api.permissions import IsAdminOrReadOnly, IsAdvertisementOwnerOrReadOnly
 from advertisement.models import Advertisement, Category, AdvertisementImage, Review
-from advertisement import serializers
+from advertisement import serializers, paginations
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from advertisement.permissions import IsReviewAuthorOrReadOnly
@@ -62,6 +62,7 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = AdvertiseFilter
     search_fields = ['title', 'location']
+    pagination_class = paginations.DefaultPagination
 
     def get_queryset(self):
         if self.request.user.is_staff:
