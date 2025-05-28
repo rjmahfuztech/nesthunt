@@ -9,6 +9,7 @@ from django.db.models import Count, Q
 from drf_yasg.utils import swagger_auto_schema
 from djoser.views import UserViewSet
 from django.contrib.auth.hashers import check_password
+from advertisement.serializers import AdvertisementSerializer
 
 
 class MyAdvertisementViewSet(viewsets.ModelViewSet):
@@ -69,7 +70,9 @@ class AdminDashboardViewSet(viewsets.ViewSet):
             last_month_advertisement=Count('id', filter=Q(created_at__gte=first_day_last_month, created_at__lt=first_day_current_month))
         )
 
-        return Response({**statistic, 'total_users': User.objects.count()})
+        advertisement = Advertisement.objects.select_related('owner').prefetch_related('images').all();
+
+        return Response({**statistic, 'total_users': User.objects.count(), 'advertisements': AdvertisementSerializer(advertisement, many=True).data})
     
 
 # Custom User viewSet

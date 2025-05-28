@@ -66,8 +66,8 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return Advertisement.objects.prefetch_related('images').all()
-        return Advertisement.objects.prefetch_related('images').filter(status='Approved')
+            return Advertisement.objects.select_related('owner').prefetch_related('images').all()
+        return Advertisement.objects.select_related('owner').prefetch_related('images').filter(status='Approved').all()
     
     def get_permissions(self):
         if self.action in ['partial_update', 'destroy']:

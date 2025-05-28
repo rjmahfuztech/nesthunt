@@ -34,6 +34,9 @@ class Advertisement(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_rented = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.title
 
