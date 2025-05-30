@@ -10,6 +10,9 @@ from drf_yasg.utils import swagger_auto_schema
 from djoser.views import UserViewSet
 from django.contrib.auth.hashers import check_password
 from advertisement.serializers import AdvertisementSerializer
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+import requests
 
 
 class MyAdvertisementViewSet(viewsets.ModelViewSet):
@@ -99,3 +102,23 @@ class CustomUserViewSet(UserViewSet):
         
         # user can't delete other users
         raise exceptions.PermissionDenied('You do not have permission to delete this user.')
+    
+# Google Login
+class GoogleLoginView(APIView):
+    def post(self, request):
+        token = request.data.get('access_token')
+        if token is None:
+            return Response({'error': 'No access token provided.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        google_url = f"https://www.googleapis.com/oauth2/v3/userinfo?access_token={token}"
+        user_info = requests.get(google_url).json()
+
+        if 'email' not in user_info:
+            return Response({'error': 'Invalid access token.'}, status=status.HTTP_400_BAD_REQUEST)
+        email = user_info['email']
+        first_name = user_info['given_name']
+        last_name = user_info['family_name']
+        user, created = User.objects.get_or_create(email=email, defaults={'first_name': first_name, 'last_name': last_name})
+
+        refresh = RefreshToken.for_user(user)
+        return Response({'refresh': str(refresh), 'access': str(refresh.access_token)})
