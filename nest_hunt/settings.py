@@ -178,7 +178,7 @@ DJOSER = {
     'EMAIL_FRONTEND_DOMAIN': config('FRONTEND_DOMAIN'),
     'EMAIL_FRONTEND_SITE_NAME': 'NestHunt',
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://127.0.0.1:8000/api/v1/auth/google/callback/'],
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['https://nesthunt-server.vercel.app/api/v1/auth/google/callback/'],
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {
